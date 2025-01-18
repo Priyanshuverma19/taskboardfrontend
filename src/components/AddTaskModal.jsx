@@ -7,7 +7,7 @@ const AddTaskModal = ({ isOpen, mode, taskData, onClose, onSubmit }) => {
     handleSubmit,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting }, 
   } = useForm({
     defaultValues: {
       name: '',
@@ -20,14 +20,13 @@ const AddTaskModal = ({ isOpen, mode, taskData, onClose, onSubmit }) => {
       setValue('name', taskData.name);
       setValue('status', taskData.status);
     } else {
-      reset(); 
+      reset();
     }
   }, [mode, taskData, setValue, reset]);
 
   const handleFormSubmit = async (data) => {
-    await onSubmit(data);
-    console.log(data);
-    reset(); 
+    await onSubmit(data); 
+    reset();
     onClose();
   };
 
@@ -36,7 +35,7 @@ const AddTaskModal = ({ isOpen, mode, taskData, onClose, onSubmit }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-gray-900 rounded p-6 w-full max-w-md">
-        <div className='flex justify-between items-center'>
+        <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold mb-4 text-gray-200">
             {mode === 'edit' ? 'Update Task' : 'Add New Task'}
           </h2>
@@ -57,7 +56,7 @@ const AddTaskModal = ({ isOpen, mode, taskData, onClose, onSubmit }) => {
               type="text"
               {...register('name', { required: 'Task name is required' })}
               className={`w-full border rounded px-4 py-2 bg-transparent text-gray-200 disabled:opacity-50`}
-              disabled={mode === 'edit'} 
+              disabled={isSubmitting || mode === 'edit'} 
             />
             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           </div>
@@ -67,7 +66,7 @@ const AddTaskModal = ({ isOpen, mode, taskData, onClose, onSubmit }) => {
             <select
               {...register('status', { required: 'Status is required' })}
               className="w-full border rounded px-4 py-2 bg-transparent text-gray-200"
-            
+              disabled={isSubmitting} 
             >
               <option value="Pending" className="bg-gray-800 text-gray-200">Pending</option>
               <option value="In Progress" className="bg-gray-800 text-gray-200">In Progress</option>
@@ -78,9 +77,10 @@ const AddTaskModal = ({ isOpen, mode, taskData, onClose, onSubmit }) => {
 
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded w-full"
+            className={`bg-blue-500 text-white px-4 py-2 rounded w-full ${isSubmitting ? 'opacity-50' : ''}`}
+            disabled={isSubmitting} 
           >
-            {mode === 'edit' ? 'Update Task' : 'Add Task'}
+            {isSubmitting ? 'Submitting...' : mode === 'edit' ? 'Update Task' : 'Add Task'}
           </button>
         </form>
       </div>
