@@ -21,6 +21,7 @@ const App = () => {
       setTasks((prev) => [...prev, response.data]);
       setIsModalOpen(false);
       setModalMode('add');
+      toast.success('Task added successfully!');
     } catch (error) {
       toast.error('Error adding task');
       console.error('Error adding task:', error);
@@ -44,7 +45,7 @@ const App = () => {
           task.id === currentTask.id ? { ...task, ...response.data } : task
         )
       );
-
+      toast.info('Task updated successfully!');
       setIsModalOpen(false);
       setModalMode('add');
     } catch (error) {
@@ -58,6 +59,7 @@ const App = () => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/tasks/${taskId}`);
       setTasks((prev) => prev.filter((task) => task.id !== taskId));
+      toast.error('Task deleted successfully!');
     } catch (error) {
       toast.error('Error deleting task');
       console.error('Error deleting task:', error);

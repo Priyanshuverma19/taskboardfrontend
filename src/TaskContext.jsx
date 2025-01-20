@@ -36,8 +36,12 @@ const TaskProvider = ({ children }) => {
 
   useEffect(() => {
     socket.on('taskAdded', (task) => {
-      setTasks((prev) => [...prev, task]);
-      toast.success('Task added successfully!');
+      
+      setTasks((prev) =>{
+        if(prev.some((t)=>t.id === task.id)) return prev;
+        return [...prev, task];
+      } );
+      
     });
 
     socket.on('taskUpdated', (updatedTask) => {
@@ -46,18 +50,18 @@ const TaskProvider = ({ children }) => {
           task.id === updatedTask.id ? { ...task, ...updatedTask } : task
         )
       );
-      toast.info('Task updated successfully!');
+      
     });
 
     socket.on('taskDeleted', ({ id }) => {
       setTasks((prev) => prev.filter((task) => task.id !== id));
-      toast.error('Task deleted successfully!');
+     
     });
 
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [tasks]);
 
   
 
